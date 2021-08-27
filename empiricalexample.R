@@ -1,0 +1,74 @@
+# packages 
+library(ergm) # make sure you downloaded the package from the source!
+library(ergMargins)
+
+# load in data
+load(paste("ids2172wave4.RData", sep=""))
+load(paste("best_friend_adjmat2172wave4.RData", sep=""))
+load(paste("friend_adjmat2172wave4.RData", sep=""))
+load(paste("race2172wave4.RData", sep=""))
+load(paste("gender2172wave4.RData", sep=""))
+load(paste("lunch2172wave4.RData", sep=""))
+
+# make weighted adjmat
+adjmat_bf = adjmat_bf*2
+adjmat = adjmat_bf+adjmat_f
+adjmat[adjmat == 3] <- 2 # a couple kids nominate same people for best and regular, make those best
+
+netw<-as.network(adjmat, directed =T,
+                 matrix.type="a",ignore.eval=FALSE,
+                 names.eval="nominations")
+
+netw %v% "gender" <- gender
+netw %v% "race" <- race
+netw %v% "lunch" <- lunch
+
+# Valued ERGM with standard nodematch terms
+mod1 <- ergm(netw ~ nonzero +sum 
+             +nodematch("race", form="nonzero")
+             +nodematch("gender", form="nonzero")
+             +nodematch("lunch", form="nonzero")
+             +mutual("min")
+             +transitiveweights("min","max","min")
+             ,response="nominations", reference=~Binomial(2), control = control.ergm(MCMLE.maxit = 200))
+summary(mod1)
+
+# check diagnostics
+mcmc.diagnostics(mod1)
+vif.ergm(mod1)
+
+
+# Valued ERGM with nodematchhigh and nodematchlow terms for race
+mod2 <- ergm(netw ~ 
+               nonzero
+             +sum 
+             +nodematchhigh(cut =2, attrname = "race", form="nonzero")
+             +nodematchlow(cut =2, attrname = "race", form="nonzero")
+             +nodematch("gender", form="nonzero")
+             +nodematch("lunch", form="nonzero")
+             +mutual("min")
+             +transitiveweights("min","max","min") 
+             ,response="nominations", reference=~Binomial(2), control = control.ergm(MCMLE.maxit = 200, seed = 110291))
+
+# check diagnostics
+mcmc.diagnostics(mod1)
+vif.ergm(mod1)
+
+
+# Valued ERGM with nodematchhigh and nodematchlow terms for gender
+mod3 <- ergm(netw ~ 
+               nonzero +sum 
+             #nonzerohigh(cut = 2)
+             #+nonzerolow(cut = 2)
+             +nodematch("race", form="nonzero")
+             +nodematchhigh(cut =2, attrname = "gender", form="nonzero")
+             +nodematchlow(cut =2, attrname = "gender", form="nonzero")
+             +nodematch("lunch", form="nonzero")
+             +mutual("min")
+             +transitiveweights("min","max","min") 
+             ,response="nominations", reference=~Binomial(2), control = control.ergm(MCMLE.maxit = 5000, seed = 1102))
+summary(mod3)
+
+# check diagnostics
+mcmc.diagnostics(mod1)
+vif.ergm(mod1)
