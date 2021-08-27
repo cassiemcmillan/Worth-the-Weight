@@ -1,5 +1,5 @@
 # packages 
-library(ergm) # make sure you downloaded the package from the source!
+library(ergm) # make sure you downloaded ergm from the source!
 library(ergMargins)
 
 # load in data
