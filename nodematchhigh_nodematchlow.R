@@ -2,8 +2,8 @@
 # Below is the R code to be included in the InitErgmTerm.R file from the ergm source code. 
 # This creates a version of the term for the binary ERGM from which the valued ERGM will draw from.
 # For an introduction to working with the ergm source code, I recommend Hunter, David R., Steven
-# M. Goodreau, and Mark S. Handcock. 2013. "ergm.userterms: A Template Package for Extending statnet."
-# Journal of Statistical Software 52(2).
+# M. Goodreau, and Mark S. Handcock. 2013. "ergm.userterms: A Template Package for Extending 
+# statnet." Journal of Statistical Software 52(2).
 ##################################################################################################
 
 ### nodematchhigh ###
