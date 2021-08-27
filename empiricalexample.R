@@ -1,4 +1,4 @@
-# packages 
+# packages  
 library(ergm) # make sure you downloaded ergm from the source!
 library(ergMargins)
 
