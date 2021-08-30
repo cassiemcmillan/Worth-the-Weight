@@ -1,6 +1,6 @@
 # packages  
 library(ergm) # make sure you downloaded ergm from the source!
-library(ergMargins)
+library(ergMargins) 
 
 # load in data
 load(paste("best_friend_adjmat2172wave4.RData", sep="")) # adjacency matrix including all strong tie nominations
